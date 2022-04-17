@@ -22,19 +22,18 @@ NA_PSK = sqrt(NP_PSK); % vetor de amplitudes do ruído para o PSK
 NA_QAM = sqrt(NP_QAM); % vetor de amplitudes do ruído para o QAM
 
 disp("Gerando vetor de bits...");
-info = Info(num_b);
+info = Info(num_bits);
 bits = info.generateData();
 
 disp("Codificando vetor de bits...");
-codec = Codec(p);
+codec = Codec(pkt_size);
 enc_data = codec.encode(bits);
 
-psk = PSK(Mod);
-qam = QAM(Mod);
-
 disp("Modulando vetor de bits usando PSK...");
+psk = PSK(modulacao);
 psk_mod_data = psk.modulate(enc_data);
 disp("Modulando vetor de bits usando QAM...");
+qam = QAM(modulacao);
 qam_mod_data = qam.modulate(enc_data);
 
 for i = 1:length(Eb_N0_lin)
@@ -59,10 +58,16 @@ for i = 1:length(Eb_N0_lin)
   ber_qam(i) = info.getBER(qam_dec_data);
 end
 
-
 % Plota o BER
 disp("Gerando gráficos...");
 figure
 hold on
 semilogy(Eb_N0_dB, ber_psk, '-','LineWidth',2,'Color','blue');
 semilogy(Eb_N0_dB, ber_qam,'-','LineWidth',2,'Color','red');
+xlabel('Eb/N0') 
+ylabel('BER') 
+legend(sprintf('%d-PSK',modulacao), sprintf('%d-QAM',modulacao), 'Location', 'northeast')
+
+filename = sprintf('P-%d,M-%d,EbNo-%d.jpg', pkt_size, modulacao, length(Eb_N0_lin));
+saveas(gcf, filename);
+hold off
