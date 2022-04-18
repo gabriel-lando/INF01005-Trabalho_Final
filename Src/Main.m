@@ -36,25 +36,26 @@ disp("Modulando vetor de bits usando QAM...");
 qam = QAM(modulacao);
 qam_mod_data = qam.modulate(enc_data);
 
-for i = 1:length(Eb_N0_lin)
-  fprintf("[%d] Gerando ruido no vetor de bits do PSK...\n", i);
+EbN0_len = length(Eb_N0_lin);
+for i = 1:EbN0_len
+  fprintf("[%d/%d] Gerando ruido no vetor de bits do PSK...\n", i, EbN0_len);
   psk_noise = NoiseGen.generate(psk_mod_data, NA_PSK(i));
-  fprintf("[%d] Gerando ruido no vetor de bits do QAM...\n", i);
+  fprintf("[%d/%d] Gerando ruido no vetor de bits do QAM...\n", i, EbN0_len);
   qam_noise = NoiseGen.generate(qam_mod_data, NA_QAM(i));
   
-  fprintf("[%d] Demodulando vetor de bits PSK...\n", i);
+  fprintf("[%d/%d] Demodulando vetor de bits PSK...\n", i, EbN0_len);
   psk_demod_data = psk.demodulate(psk_noise);
-  fprintf("[%d] Demodulando vetor de bits QAM...\n", i);
+  fprintf("[%d/%d] Demodulando vetor de bits QAM...\n", i, EbN0_len);
   qam_demod_data = qam.demodulate(qam_noise);
 
-  fprintf("[%d] Decodificando vetor de bits PSK...\n", i);
+  fprintf("[%d/%d] Decodificando vetor de bits PSK...\n", i, EbN0_len);
   psk_dec_data = codec.decode(psk_demod_data);
-  fprintf("[%d] Decodificando vetor de bits QAM...\n", i);
+  fprintf("[%d/%d] Decodificando vetor de bits QAM...\n", i, EbN0_len);
   qam_dec_data = codec.decode(qam_demod_data);
   
-  fprintf("[%d] Calculando BER para PSK...\n", i);
+  fprintf("[%d/%d] Calculando BER para PSK...\n", i, EbN0_len);
   ber_psk(i) = info.getBER(psk_dec_data);
-  fprintf("[%d] Calculando BER para QAM...\n", i);
+  fprintf("[%d/%d] Calculando BER para QAM...\n", i, EbN0_len);
   ber_qam(i) = info.getBER(qam_dec_data);
 end
 
