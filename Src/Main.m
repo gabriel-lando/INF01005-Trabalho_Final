@@ -58,8 +58,7 @@ for i = 1:length(Eb_N0_lin)
   ber_qam(i) = info.getBER(qam_dec_data);
 end
 
-% Plota o BER
-disp("Gerando gráficos...");
+disp("Gerando graficos...");
 figure
 hold on
 semilogy(Eb_N0_dB, ber_psk, '-','LineWidth',2,'Color','blue');
